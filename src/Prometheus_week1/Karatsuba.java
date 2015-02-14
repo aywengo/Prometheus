@@ -17,7 +17,13 @@ public class Karatsuba {
             N = x.toString().length();
         else
             N = y.toString().length();
-        int n = N / 2 + N % 2;
+
+        int n;
+        if (N % 2 == 0) {
+            n = N / 2;
+        } else {
+            n = ++N / 2;
+        }
 
         // x = 2^N a +  b,   y = 2^N c + d
         BigInteger a = x.divide(BigInteger.valueOf(base).pow(n));
@@ -29,12 +35,15 @@ public class Karatsuba {
         BigInteger ac = multiply(a, c, st);
         BigInteger bd = multiply(b, d, st);
 
-        BigInteger ad_bc = multiply(b.add(a), (d.add(c)), st).subtract(bd).subtract(ac);
+        BigInteger ad_bc = multiply(b.add(a), d.add(c), st).subtract(bd).subtract(ac);
         stat(ad_bc, st);
 
         // sum-up result of the multiplication
-        BigInteger result = ac.multiply(BigInteger.valueOf((int) Math.pow(base, N)))
-                .add(ad_bc.multiply(BigInteger.valueOf((int) Math.pow(base, n)))).add(bd);
+        BigInteger result =
+                ac.multiply(BigInteger.valueOf(base).pow(N))
+                        .add(ad_bc.multiply(BigInteger.valueOf(base).pow(n)))
+                        .add(bd);
+
         return result;
     }
 

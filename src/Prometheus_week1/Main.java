@@ -12,12 +12,12 @@ public class Main {
         BigInteger x = new BigInteger("1685287499328328297814655639278583667919355849391453456921116729");
         BigInteger y = new BigInteger("7114192848577754587969744626558571536728983167954552999895348492");
 
-        HashMap<Integer, Integer> statistic = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> statistic = new HashMap<>();
         statistic.put(105, 0);
         statistic.put(72, 0);
         statistic.put(12, 0);
 
-        AtomicReference<HashMap<Integer, Integer>> rs = new AtomicReference<HashMap<Integer, Integer>>(statistic);
+        AtomicReference<HashMap<Integer, Integer>> rs = new AtomicReference<>(statistic);
 
         BigInteger xy = Karatsuba.multiply(x, y, rs);
         System.out.println(xy);
