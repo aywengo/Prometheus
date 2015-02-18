@@ -37,20 +37,7 @@ public class RadixSort {
         result[_rad] = input;
 
         for (int j = _rad - 1; j >= 0; j--) {
-            for (String anInput : result[j + 1]) {
-                char ch = anInput.charAt(j);
-                int k = get_key(ch);
-                _counts[j][k]++;
-            }
-
-            int[] c = calculate(j);
-
-            for (int i = result[j + 1].length - 1; i >= 0; i--) {
-                char ch = result[j + 1][i].charAt(j);
-                int k = get_key(ch);
-                int index = c[k]--;
-                result[j][index - 1] = result[j + 1][i];
-            }
+            countingSort(j, result[j + 1], result[j]);
         }
 
         ArrangeOccurrences();
@@ -59,6 +46,23 @@ public class RadixSort {
         System.out.printf("The first line after SECOND iteration is %s%n", result[_rad - 2][0]);
 
         return result[0];
+    }
+
+    private void countingSort(int rad, String[] A, String[] B) {
+        for (String anInput : A) {
+            char ch = anInput.charAt(rad);
+            int k = get_key(ch);
+            _counts[rad][k]++;
+        }
+
+        int[] c = calculate(rad);
+
+        for (int i = A.length - 1; i >= 0; i--) {
+            char ch = A[i].charAt(rad);
+            int k = get_key(ch);
+            int index = c[k]--;
+            B[index - 1] = A[i];
+        }
     }
 
     private void ArrangeOccurrences() {
