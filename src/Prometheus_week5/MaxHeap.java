@@ -1,14 +1,16 @@
 package Prometheus_week5;
 
-public class MaxHeap extends BinaryHeap {
+import java.lang.Comparable;
 
-    private int[] heap;
+public class MaxHeap<T extends Comparable<T>> extends BinaryHeapBase<T> {
 
-    public MaxHeap(int[] A) {
+    private T[] heap;
+
+    public MaxHeap(T[] A) {
         heap = A;
     }
 
-    public static void maxHeapify(IBinaryHeap A, int i) {
+    public void maxHeapify(IBinaryHeap<T> A, int i) {
         int l = A.left(i);
         int r = A.right(i);
 
@@ -27,7 +29,7 @@ public class MaxHeap extends BinaryHeap {
         }
     }
 
-    public static void buildMaxHeap(IBinaryHeap A) {
+    public void buildMaxHeap(IBinaryHeap<T> A) {
         for (int i = A.heapSize() + 1; i > 0; i--) {
             maxHeapify(A, i - 1);
         }

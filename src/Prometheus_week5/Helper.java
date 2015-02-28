@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.util.*;
 
-public class Helper {
+public class Helper<T> {
 
     public static ArrayList<String> readFile(java.nio.file.Path file) {
         ArrayList<String> result = new ArrayList<>();
@@ -23,8 +23,8 @@ public class Helper {
         return result;
     }
 
-    public static void swap(int[] A, int x, int y) {
-        int z = A[x];
+    public void swap(T[] A, int x, int y) {
+        T z = A[x];
         A[x] = A[y];
         A[y] = z;
     }
