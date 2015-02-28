@@ -1,8 +1,6 @@
 package Prometheus_week5;
 
-import java.lang.*;
-
-public interface IHeap<T> {
+public interface IHeap<T extends Comparable<T>> {
     int parent(int i);
 
     int heapSize();

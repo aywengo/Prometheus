@@ -1,7 +1,5 @@
 package Prometheus_week5;
 
-import java.lang.Comparable;
-
 public class MaxHeap<T extends Comparable<T>> extends BinaryHeapBase<T> {
 
     private T[] heap;
@@ -15,11 +13,11 @@ public class MaxHeap<T extends Comparable<T>> extends BinaryHeapBase<T> {
         int r = A.right(i);
 
         int largest = i;
-        if (l <= A.heapSize() && A.getElement(l) > A.getElement(i)) {
+        if (l <= A.heapSize() && A.getElement(l).compareTo(A.getElement(i)) > 0) {
             largest = l;
         }
 
-        if (r <= A.heapSize() && A.getElement(r) > A.getElement(largest)) {
+        if (r <= A.heapSize() && A.getElement(r).compareTo(A.getElement(largest)) > 0) {
             largest = r;
         }
 
@@ -41,12 +39,12 @@ public class MaxHeap<T extends Comparable<T>> extends BinaryHeapBase<T> {
     }
 
     @Override
-    public int getElement(int i) {
+    public T getElement(int i) {
         return heap[i];
     }
 
     @Override
-    public int[] heap() {
+    public T[] heap() {
         return heap;
     }
 }
