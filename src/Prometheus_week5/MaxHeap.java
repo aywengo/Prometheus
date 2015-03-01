@@ -2,10 +2,8 @@ package Prometheus_week5;
 
 public class MaxHeap<T extends Comparable<T>> extends BinaryHeapBase<T> {
 
-    private T[] heap;
-
-    public MaxHeap(T[] A) {
-        heap = A;
+    public MaxHeap(int capacity) {
+        super(capacity);
     }
 
     public void maxHeapify(IBinaryHeap<T> A, int i) {
@@ -28,23 +26,13 @@ public class MaxHeap<T extends Comparable<T>> extends BinaryHeapBase<T> {
     }
 
     public void buildMaxHeap(IBinaryHeap<T> A) {
-        for (int i = A.heapSize() + 1; i > 0; i--) {
-            maxHeapify(A, i - 1);
+        for (int i = A.heapSize(); i > 0; i--) {
+            maxHeapify(A, i);
         }
     }
 
     @Override
-    public int heapSize() {
-        return heap.length;
-    }
-
-    @Override
-    public T getElement(int i) {
-        return heap[i];
-    }
-
-    @Override
-    public T[] heap() {
-        return heap;
+    public void heapify() {
+        buildMaxHeap(this);
     }
 }

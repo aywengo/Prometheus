@@ -5,6 +5,14 @@ public interface IHeap<T extends Comparable<T>> {
 
     int heapSize();
 
+    void heapify();
+
+    void dump(String caption);
+
+    void push(T a);
+
+    T pop();
+
     T getElement(int i);
 
     T[] heap();
