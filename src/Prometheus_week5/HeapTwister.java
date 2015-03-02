@@ -10,7 +10,8 @@ public class HeapTwister<T extends Comparable<T>> {
     }
 
     public void insert(T item) {
-        if (High.getElement(1).compareTo(item) < 0) {
+        if (High.getElement(1) == null
+                || High.getElement(1).compareTo(item) < 0) {
             High.push(item);
         } else {
             Low.push(item);
@@ -22,8 +23,8 @@ public class HeapTwister<T extends Comparable<T>> {
     public <T> T[] Medians() {
         T[] result = (T[]) new Comparable[2];
         if (hasSizeEven()) {
-            result[0] = (T) High.getElement(1);
             result[1] = (T) High.getElement(1);
+            result[0] = (T) Low.getElement(1);
         } else {
             if (High.heapSize() > Low.heapSize()) {
                 result[0] = (T) High.getElement(1);
@@ -36,14 +37,12 @@ public class HeapTwister<T extends Comparable<T>> {
     }
 
     private void BalanceHeaps() {
-        if (High.heapSize() - Low.heapSize() > 1) {
-            while (High.heapSize() - Low.heapSize() > 1) {
-                Low.push(High.pop());
-            }
-        } else if (Low.heapSize() - High.heapSize() > 1) {
-            while (Low.heapSize() - High.heapSize() > 1) {
-                High.push(Low.pop());
-            }
+        while (High.heapSize() - Low.heapSize() > 1) {
+            Low.push(High.pop());
+        }
+
+        while (Low.heapSize() - High.heapSize() > 1) {
+            High.push(Low.pop());
         }
     }
 
@@ -52,18 +51,19 @@ public class HeapTwister<T extends Comparable<T>> {
         System.out.print("Medians ");
         for (int i = 0; i < Medians().length; i++) {
             System.out.print(Medians()[i]);
+            System.out.print(" ");
         }
         System.out.println();
 
         System.out.print("H_low: [");
         for (int i = 1; i <= Low.heapSize(); i++) {
-            System.out.printf("%d, ", Low.getElement(i));
+            System.out.printf("%d ", Low.getElement(i));
         }
         System.out.println("]");
 
         System.out.print("H_high: [");
-        for (int i = 1; i < High.heapSize(); i++) {
-            System.out.printf("%d, ", High.getElement(i));
+        for (int i = 1; i <= High.heapSize(); i++) {
+            System.out.printf("%d ", High.getElement(i));
         }
         System.out.println("]");
 

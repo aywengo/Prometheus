@@ -40,8 +40,8 @@ public abstract class BinaryHeapBase<T extends Comparable<T>> implements IBinary
 
     @Override
     public T pop() {
-        T result = getElement(0);
-        Helper.swap(heap, 0, size-- - 1);
+        T result = getElement(1);
+        Helper.swap(heap, 1, size--);
         heapify();
         return result;
     }
