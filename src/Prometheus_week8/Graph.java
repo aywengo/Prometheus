@@ -46,39 +46,36 @@ public class Graph<T> {
         return true;
     }
 
-    public static <E> int depthFirstSearch(Graph<E> g, E s) {
+    public static <E> HashMap<E, Integer> depthFirstSearch(Graph<E> g, E s) {
         int k = 1;
         Stack<E> stack = new Stack<>();
-        for(E heap : g.Vertexes.keySet()) {
-            if (heap == s)
-                continue;
-            stack.add(heap);
-        }
+        stack.push(s);
+        HashMap<E, Integer>  dfs = new HashMap<>();
+        dfs.put(s, k);
 
-        while (!stack.empty())
-        {
+        while (!stack.empty()){
             E v = stack.pop();
             Vertex<E> vertex = g.Vertexes.get(v);
 
-            E n = getUndiscaveredHead(stack, vertex);
-            if (n != null){
-                k++;
-                stack.push(n);
-            }
-        }
-
-        return k;
-    }
-
-    private static <R> R getUndiscaveredHead(Stack<R> stack, Vertex<R> vertex) {
-        for (R head : stack)
-        {
-            if (vertex.OutConnections.containsKey(head))
+            for (E head : vertex.OutConnections.keySet())
             {
-                return head;
+                if (dfs.containsKey(head))
+                    continue;
+
+                dfs.put(head, ++k);
+                stack.add(head);
+            }
+
+            for (E head : vertex.InConnections.keySet())
+            {
+                if (dfs.containsKey(head))
+                    continue;
+
+                dfs.put(head, ++k);
+                stack.add(head);
             }
         }
 
-        return null;
+        return dfs;
     }
 }
