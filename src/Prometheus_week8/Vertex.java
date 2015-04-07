@@ -22,8 +22,5 @@ public class Vertex<T> {
                 && !InConnections.containsKey(edge.Begin)) {
             InConnections.put(edge.Begin,edge);
         }
-        else {
-            throw new IllegalArgumentException();
-        }
     }
 }

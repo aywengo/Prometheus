@@ -16,7 +16,7 @@ public class Graph<T extends Comparable<T>> {
             if (v == null) break;
 
             depthFirstSearch(v);
-            System.out.print(".");
+            //System.out.print(".");
         }
     }
 
@@ -26,10 +26,10 @@ public class Graph<T extends Comparable<T>> {
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .forEachOrdered(ord -> {
                     if (!Times.containsKey(ord.getKey())) {
+                        //System.out.print(".");
                         depthFirstSearch(ord.getKey());
                         componentCapacities.add(Times.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
                     }
-                    System.out.print(".");
                 });
     }
 
@@ -57,21 +57,16 @@ public class Graph<T extends Comparable<T>> {
     }
 
     private boolean insertUpdateVertex(Edge<T> edge) {
-        try {
-            if (Vertexes.containsKey(edge.Begin)) {
-                Vertexes.get(edge.Begin).addConnection(edge);
-            } else {
-                Vertexes.put(edge.Begin, new Vertex<>(edge.Begin, edge));
-            }
+        if (Vertexes.containsKey(edge.Begin)) {
+            Vertexes.get(edge.Begin).addConnection(edge);
+        } else {
+            Vertexes.put(edge.Begin, new Vertex<>(edge.Begin, edge));
+        }
 
-            if (Vertexes.containsKey(edge.End)) {
-                Vertexes.get(edge.End).addConnection(edge);
-            } else {
-                Vertexes.put(edge.End, new Vertex<>(edge.End, edge));
-            }
-        } catch (Exception ex) {
-            System.out.print(ex.toString());
-            return false;
+        if (Vertexes.containsKey(edge.End)) {
+            Vertexes.get(edge.End).addConnection(edge);
+        } else {
+            Vertexes.put(edge.End, new Vertex<>(edge.End, edge));
         }
 
         return true;
