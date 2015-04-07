@@ -16,7 +16,6 @@ public class Graph<T extends Comparable<T>> {
             if (v == null) break;
 
             depthFirstSearch(v);
-            //System.out.print(".");
         }
     }
 
@@ -26,7 +25,6 @@ public class Graph<T extends Comparable<T>> {
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .forEachOrdered(ord -> {
                     if (!Times.containsKey(ord.getKey())) {
-                        //System.out.print(".");
                         depthFirstSearch(ord.getKey());
                         componentCapacities.add(Times.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
                     }
@@ -75,19 +73,22 @@ public class Graph<T extends Comparable<T>> {
     private void depthFirstSearch(T s) {
         Stack<T> stack = new Stack<>();
         stack.push(s);
+        Times.put(s, ++k);
 
         while (!stack.empty()) {
-            T v = stack.pop();
+            T v = stack.peek();
             Vertex<T> vertex = Vertexes.get(v);
+            boolean toRemove = true;
 
-            if (!Times.containsKey(v)) {
-                Times.put(v, ++k);
-                for (T head : vertex.OutConnections.keySet()) {
-                    if (Times.containsKey(head))
-                        continue;
+            for (T head : vertex.OutConnections.keySet()) {
+                if (Times.containsKey(head)) continue;
+                toRemove = false;
+                Times.put(head, ++k);
+                stack.push(head);
+            }
 
-                    stack.push(head);
-                }
+            if (toRemove) {
+                stack.remove(v);
             }
         }
     }

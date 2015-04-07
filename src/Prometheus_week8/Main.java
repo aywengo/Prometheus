@@ -9,14 +9,18 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
+        File inputFile = new File(String.format("%s\\src\\Prometheus_week8\\data\\%s",
+                System.getProperty("user.dir"), "input_08.txt"));
+
+        computePattern(inputFile);
+    }
+
+    public static String computePattern(File inputFile){
         Graph<Integer> g = new Graph<>();
         Graph<Integer> tg = new Graph<>();
 
         System.out.print("Reading input file: ");
         try {
-            File inputFile = new File(String.format("%s\\src\\Prometheus_week8\\testData\\%s",
-                    System.getProperty("user.dir"), "test_08_4.txt"));
-
             FileInputStream inputStream = null;
             Scanner sc = null;
             try {
@@ -29,9 +33,6 @@ public class Main {
                     g.addEdge(begin, end);
                     tg.addEdge(end, begin);
                 }
-                if (sc.ioException() != null) {
-                    throw sc.ioException();
-                }
             } finally {
                 if (inputStream != null) {
                     inputStream.close();
@@ -40,7 +41,6 @@ public class Main {
                     sc.close();
                 }
             }
-
             System.out.println(" -- DONE");
 
             System.out.print("Computing DFSLoop(G): ");
@@ -48,38 +48,27 @@ public class Main {
             System.out.println(" -- DONE");
 
             System.out.print("Computing DFSLoop(Gt): ");
-
             tg.strongConnectedComponentComputing(g.Times);
-
             System.out.println(" -- DONE");
-
 
             System.out.print("Graph order complexity: ");
             g.Times.entrySet().stream()
                     .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                    .forEachOrdered(ord -> {
-                        System.out.print(ord + " ");
-                    });
-            System.out.println();
-
-            System.out.print("TGraf order complexity: ");
-            tg.Times.entrySet().stream()
-                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                    .forEachOrdered(ord -> {
-                        System.out.print(ord + " ");
-                    });
+                    .forEachOrdered(ord -> System.out.print(ord + " "));
             System.out.println();
 
             System.out.print("Capacities: ");
+            StringBuilder sb = new StringBuilder();
             tg.componentCapacities.stream()
                     .sorted(Collections.reverseOrder())
-                    .forEach(o -> System.out.print(o + " "));
-            System.out.println();
-
-        } catch (OperationsException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+                    .forEach(o -> sb.append(" ").append(o));
+            String output = sb.toString().trim();
+            System.out.println(output);
+            return output;
+        } catch (OperationsException | IOException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 }
