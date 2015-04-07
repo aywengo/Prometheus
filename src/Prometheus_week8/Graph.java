@@ -4,10 +4,10 @@ import javax.management.OperationsException;
 import java.util.*;
 
 public class Graph<T extends Comparable<T>> {
-    HashSet<Edge<T>> Edges = new HashSet<>();
-    HashMap<T, Vertex<T>> Vertexes = new HashMap<>();
-    HashMap<T, Integer> Times = new HashMap<>();
-    ArrayList<Integer> componentCapacities = new ArrayList<>();
+    Set<Edge<T>> Edges = new HashSet<>();
+    Map<T, Vertex<T>> Vertexes = new HashMap<>();
+    Map<T, Integer> Times = new HashMap<>();
+    List<Integer> componentCapacities = new ArrayList<>();
     int k = 0;
 
     public void strongConnectedComponentComputing() {
@@ -19,7 +19,7 @@ public class Graph<T extends Comparable<T>> {
         }
     }
 
-    public void strongConnectedComponentComputing(HashMap<T, Integer> map)
+    public void strongConnectedComponentComputing(Map<T, Integer> map)
             throws OperationsException {
         map.entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
@@ -71,11 +71,11 @@ public class Graph<T extends Comparable<T>> {
     }
 
     private void depthFirstSearch(T s) {
-        Stack<T> stack = new Stack<>();
-        stack.push(s);
+        Deque<T> stack = new ArrayDeque<>();
+        stack.addFirst(s);
         Times.put(s, ++k);
 
-        while (!stack.empty()) {
+        while (!stack.isEmpty()) {
             T v = stack.peek();
             Vertex<T> vertex = Vertexes.get(v);
             boolean toRemove = true;
@@ -84,7 +84,7 @@ public class Graph<T extends Comparable<T>> {
                 if (Times.containsKey(head)) continue;
                 toRemove = false;
                 Times.put(head, ++k);
-                stack.push(head);
+                stack.addFirst(head);
             }
 
             if (toRemove) {

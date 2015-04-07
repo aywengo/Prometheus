@@ -1,12 +1,13 @@
 package Prometheus_week8;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Vertex<T> {
     public T Head;
 
-    public HashMap<T,Edge<T>> InConnections = new HashMap<>();
-    public HashMap<T,Edge<T>> OutConnections = new HashMap<>();
+    Map<T,Edge<T>> InConnections = new HashMap<>();
+    Map<T,Edge<T>> OutConnections = new HashMap<>();
 
     public Vertex(T head, Edge<T> edge) {
         Head = head;

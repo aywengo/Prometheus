@@ -57,7 +57,7 @@ public class Main {
                     .forEachOrdered(ord -> System.out.print(ord + " "));
             System.out.println();
 
-            System.out.print("Capacities: ");
+//            System.out.print("Capacities: ");
             StringBuilder sb = new StringBuilder();
             tg.componentCapacities.stream()
                     .sorted(Collections.reverseOrder())
