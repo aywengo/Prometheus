@@ -1,12 +1,45 @@
 package Prometheus_week8;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Stack;
+import javax.management.OperationsException;
+import java.util.*;
 
-public class Graph<T> {
+public class Graph<T extends Comparable<T>> {
     HashSet<Edge<T>> Edges = new HashSet<>();
-    HashMap<T,Vertex<T>> Vertexes = new HashMap<>();
+    HashMap<T, Vertex<T>> Vertexes = new HashMap<>();
+    HashMap<T, Integer> Times = new HashMap<>();
+    ArrayList<Integer> componentCapacities = new ArrayList<>();
+    int k = 0;
+
+    public void strongConnectedComponentComputing() {
+        while (k < Vertexes.size()) {
+            T v = getNextUndiscovered();
+            if (v == null) break;
+
+            depthFirstSearch(v);
+            System.out.print(".");
+        }
+    }
+
+    public void strongConnectedComponentComputing(HashMap<T, Integer> map)
+            throws OperationsException {
+        map.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .forEachOrdered(ord -> {
+                    if (!Times.containsKey(ord.getKey())) {
+                        depthFirstSearch(ord.getKey());
+                        componentCapacities.add(Times.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
+                    }
+                    System.out.print(".");
+                });
+    }
+
+    private T getNextUndiscovered() {
+        for (T i : Vertexes.keySet()) {
+            if (!Times.containsKey(i)) return i;
+        }
+
+        return null;
+    }
 
     public boolean addEdge(T begin, T end) {
         return addEdge(begin, end, 1);
@@ -15,7 +48,7 @@ public class Graph<T> {
     public boolean addEdge(T begin, T end, int weight) {
         Edge<T> toAdd = new Edge<>(begin, end, weight);
 
-        if (Edges.contains(toAdd)){
+        if (Edges.contains(toAdd)) {
             return false;
         }
 
@@ -27,15 +60,13 @@ public class Graph<T> {
         try {
             if (Vertexes.containsKey(edge.Begin)) {
                 Vertexes.get(edge.Begin).addConnection(edge);
-            }
-            else {
+            } else {
                 Vertexes.put(edge.Begin, new Vertex<>(edge.Begin, edge));
             }
 
             if (Vertexes.containsKey(edge.End)) {
                 Vertexes.get(edge.End).addConnection(edge);
-            }
-            else {
+            } else {
                 Vertexes.put(edge.End, new Vertex<>(edge.End, edge));
             }
         } catch (Exception ex) {
@@ -46,36 +77,23 @@ public class Graph<T> {
         return true;
     }
 
-    public static <E> HashMap<E, Integer> depthFirstSearch(Graph<E> g, E s) {
-        int k = 1;
-        Stack<E> stack = new Stack<>();
+    private void depthFirstSearch(T s) {
+        Stack<T> stack = new Stack<>();
         stack.push(s);
-        HashMap<E, Integer>  dfs = new HashMap<>();
-        dfs.put(s, k);
 
-        while (!stack.empty()){
-            E v = stack.pop();
-            Vertex<E> vertex = g.Vertexes.get(v);
+        while (!stack.empty()) {
+            T v = stack.pop();
+            Vertex<T> vertex = Vertexes.get(v);
 
-            for (E head : vertex.OutConnections.keySet())
-            {
-                if (dfs.containsKey(head))
-                    continue;
+            if (!Times.containsKey(v)) {
+                Times.put(v, ++k);
+                for (T head : vertex.OutConnections.keySet()) {
+                    if (Times.containsKey(head))
+                        continue;
 
-                dfs.put(head, ++k);
-                stack.add(head);
-            }
-
-            for (E head : vertex.InConnections.keySet())
-            {
-                if (dfs.containsKey(head))
-                    continue;
-
-                dfs.put(head, ++k);
-                stack.add(head);
+                    stack.push(head);
+                }
             }
         }
-
-        return dfs;
     }
 }
