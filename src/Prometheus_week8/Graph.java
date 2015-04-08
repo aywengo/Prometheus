@@ -8,9 +8,11 @@ public class Graph<T extends Comparable<T>> {
     Map<T, Vertex<T>> Vertexes = new HashMap<>();
     Map<T, Integer> Times = new HashMap<>();
     List<Integer> componentCapacities = new ArrayList<>();
+    Set<T> discovered = new HashSet<>();
     int k = 0;
 
     public void strongConnectedComponentComputing() {
+        k = 0;
         while (k < Vertexes.size()) {
             Optional<T> v = getNextUndiscovered();
             if (v.isPresent())
@@ -20,18 +22,19 @@ public class Graph<T extends Comparable<T>> {
 
     public void strongConnectedComponentComputing(Map<T, Integer> map)
             throws OperationsException {
+        k = 0;
         map.entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .forEachOrdered(ord -> {
-                    if (!Times.containsKey(ord.getKey())) {
+                    if (!discovered.contains(ord.getKey())) {
                         depthFirstSearch(ord.getKey());
-                        componentCapacities.add(Times.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
+                        componentCapacities.add(discovered.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
                     }
                 });
     }
 
     private Optional<T> getNextUndiscovered() {
-        return Vertexes.keySet().stream().filter(ks -> !Times.containsKey(ks)).findAny();
+        return Vertexes.keySet().stream().filter(ks -> !discovered.contains(ks)).findAny();
     }
 
     public boolean addEdge(T begin, T end) {
@@ -66,36 +69,27 @@ public class Graph<T extends Comparable<T>> {
     }
 
     private void depthFirstSearch(T s) {
-        if (!Times.isEmpty()){
-            k = Collections.max(Times.values());
-        }
-        else {
-            k = 0;
-        }
-
         Deque<T> stack = new ArrayDeque<>();
-        stack.push(s);
-        Set<T> discovered = new HashSet<>();
-        discovered.addAll(Times.keySet());
+        stack.addLast(s);
         discovered.add(s);
 
         while (!stack.isEmpty()) {
             T v = stack.getFirst();
             Vertex<T> vertex = Vertexes.get(v);
-            discovered.add(v);
 
             if (vertex.OutConnections.isEmpty()
-                    ||  vertex.OutConnections.keySet().stream().allMatch(vo -> discovered.contains(vo))){
-                Times.put(v,++k);
-
+                    ||  vertex.OutConnections.keySet().stream().allMatch(discovered::contains)){
+                Times.put(v, ++k);
                 stack.remove(v);
             }
             else {
                 vertex.OutConnections.keySet().stream()
                         .filter(vo -> !discovered.contains(vo))
-                        .forEach(vo -> {
-                            stack.addFirst(vo);
+                        .forEach(e -> {
+                            discovered.add(e);
+                            stack.addFirst(e);
                         });
+
             }
         }
     }
