@@ -63,7 +63,7 @@ public class Main {
                     .sorted(Collections.reverseOrder())
                     .forEach(o -> sb.append(" ").append(o));
             String output = sb.toString().trim();
-            System.out.println(output);
+//            System.out.println(output);
             return output;
         } catch (OperationsException | IOException e) {
             e.printStackTrace();

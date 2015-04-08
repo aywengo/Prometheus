@@ -12,10 +12,9 @@ public class Graph<T extends Comparable<T>> {
 
     public void strongConnectedComponentComputing() {
         while (k < Vertexes.size()) {
-            T v = getNextUndiscovered();
-            if (v == null) break;
-
-            depthFirstSearch(v);
+            Optional<T> v = getNextUndiscovered();
+            if (v.isPresent())
+                depthFirstSearch(v.get());
         }
     }
 
@@ -31,12 +30,8 @@ public class Graph<T extends Comparable<T>> {
                 });
     }
 
-    private T getNextUndiscovered() {
-        for (T i : Vertexes.keySet()) {
-            if (!Times.containsKey(i)) return i;
-        }
-
-        return null;
+    private Optional<T> getNextUndiscovered() {
+        return Vertexes.keySet().stream().filter(ks -> !Times.containsKey(ks)).findAny();
     }
 
     public boolean addEdge(T begin, T end) {
@@ -71,24 +66,30 @@ public class Graph<T extends Comparable<T>> {
     }
 
     private void depthFirstSearch(T s) {
+        k=0;
         Deque<T> stack = new ArrayDeque<>();
-        stack.addFirst(s);
-        Times.put(s, ++k);
+        stack.push(s);
+        Set<T> discovered = new HashSet<>();
+        discovered.add(s);
 
         while (!stack.isEmpty()) {
-            T v = stack.peek();
+            T v = stack.getFirst();
             Vertex<T> vertex = Vertexes.get(v);
-            boolean toRemove = true;
+            discovered.add(v);
 
-            for (T head : vertex.OutConnections.keySet()) {
-                if (Times.containsKey(head)) continue;
-                toRemove = false;
-                Times.put(head, ++k);
-                stack.addFirst(head);
-            }
+            if (vertex.OutConnections.isEmpty()
+                  ||  vertex.OutConnections.keySet().stream().allMatch(vo -> discovered.contains(vo))){
+                if (!Times.containsKey(v))
+                    Times.put(v,++k);
 
-            if (toRemove) {
                 stack.remove(v);
+            }
+            else {
+                vertex.OutConnections.keySet().stream()
+                        .filter(vo -> !discovered.contains(vo))
+                        .forEach(vo -> {
+                            stack.addFirst(vo);
+                        });
             }
         }
     }
