@@ -66,10 +66,11 @@ public class Graph<T extends Comparable<T>> {
     }
 
     private void depthFirstSearch(T s) {
-        k=0;
+        k=Times.keySet().stream().max();
         Deque<T> stack = new ArrayDeque<>();
         stack.push(s);
         Set<T> discovered = new HashSet<>();
+        discivered.addAll(Times.keySet());
         discovered.add(s);
 
         while (!stack.isEmpty()) {
@@ -79,7 +80,6 @@ public class Graph<T extends Comparable<T>> {
 
             if (vertex.OutConnections.isEmpty()
                   ||  vertex.OutConnections.keySet().stream().allMatch(vo -> discovered.contains(vo))){
-                if (!Times.containsKey(v))
                     Times.put(v,++k);
 
                 stack.remove(v);
