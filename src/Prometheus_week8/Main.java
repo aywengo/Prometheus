@@ -17,7 +17,6 @@ public class Main {
 
     public static String computePattern(File inputFile){
         Graph<Integer> g = new Graph<>();
-        Graph<Integer> tg = new Graph<>();
 
         System.out.print("Reading input file: ");
         try {
@@ -31,7 +30,6 @@ public class Main {
                     int begin = Integer.parseInt(edges[0]);
                     int end = Integer.parseInt(edges[1]);
                     g.addEdge(begin, end);
-                    tg.addEdge(end, begin);
                 }
             } finally {
                 if (inputStream != null) {
@@ -48,7 +46,7 @@ public class Main {
             System.out.println(" -- DONE");
 
             System.out.print("Computing DFSLoop(Gt): ");
-            tg.strongConnectedComponentComputing(g.Times);
+            g.sccAmountsComputing();
             System.out.println(" -- DONE");
 
             System.out.print("Graph order complexity: ");
@@ -57,13 +55,13 @@ public class Main {
                     .forEachOrdered(ord -> System.out.print(ord + " "));
             System.out.println();
 
-//            System.out.print("Capacities: ");
+            System.out.print("Capacities: ");
             StringBuilder sb = new StringBuilder();
-            tg.componentCapacities.stream()
+            g.componentCapacities.stream()
                     .sorted(Collections.reverseOrder())
                     .forEach(o -> sb.append(" ").append(o));
             String output = sb.toString().trim();
-//            System.out.println(output);
+            System.out.println(output);
             return output;
         } catch (OperationsException | IOException e) {
             e.printStackTrace();

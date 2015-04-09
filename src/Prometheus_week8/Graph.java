@@ -7,9 +7,11 @@ public class Graph<T extends Comparable<T>> {
     Set<Edge<T>> Edges = new HashSet<>();
     Map<T, Vertex<T>> Vertexes = new HashMap<>();
     Map<T, Integer> Times = new HashMap<>();
+    Map<T, Integer> reversedTimes = new HashMap<>();
     List<Integer> componentCapacities = new ArrayList<>();
     Set<T> discovered = new HashSet<>();
-    int k = 0;
+    Set<T> reversedDiscovered = new HashSet<>();
+    int k = 0, rk =0;
 
     public void strongConnectedComponentComputing() {
         k = 0;
@@ -29,6 +31,19 @@ public class Graph<T extends Comparable<T>> {
                     if (!discovered.contains(ord.getKey())) {
                         depthFirstSearch(ord.getKey());
                         componentCapacities.add(discovered.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
+                    }
+                });
+    }
+
+    public void sccAmountsComputing()
+            throws OperationsException {
+        rk = 0;
+        Times.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .forEachOrdered(ord -> {
+                    if (!reversedDiscovered.contains(ord.getKey())) {
+                        depthFirstSearchReversed(ord.getKey());
+                        componentCapacities.add(reversedDiscovered.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
                     }
                 });
     }
@@ -89,7 +104,31 @@ public class Graph<T extends Comparable<T>> {
                             discovered.add(e);
                             stack.addFirst(e);
                         });
+            }
+        }
+    }
 
+    private void depthFirstSearchReversed(T s) {
+        Deque<T> stack = new ArrayDeque<>();
+        stack.addLast(s);
+        reversedDiscovered.add(s);
+
+        while (!stack.isEmpty()) {
+            T v = stack.getFirst();
+            Vertex<T> vertex = Vertexes.get(v);
+
+            if (vertex.InConnections.isEmpty()
+                    ||  vertex.InConnections.keySet().stream().allMatch(reversedDiscovered::contains)){
+                reversedTimes.put(v, ++k);
+                stack.remove(v);
+            }
+            else {
+                vertex.InConnections.keySet().stream()
+                        .filter(vo -> !reversedDiscovered.contains(vo))
+                        .forEach(e -> {
+                            reversedDiscovered.add(e);
+                            stack.addFirst(e);
+                        });
             }
         }
     }
