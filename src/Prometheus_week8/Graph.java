@@ -22,19 +22,6 @@ public class Graph<T extends Comparable<T>> {
         }
     }
 
-    public void strongConnectedComponentComputing(Map<T, Integer> map)
-            throws OperationsException {
-        k = 0;
-        map.entrySet().stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .forEachOrdered(ord -> {
-                    if (!discovered.contains(ord.getKey())) {
-                        depthFirstSearch(ord.getKey());
-                        componentCapacities.add(discovered.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
-                    }
-                });
-    }
-
     public void sccAmountsComputing()
             throws OperationsException {
         rk = 0;
@@ -85,7 +72,7 @@ public class Graph<T extends Comparable<T>> {
 
     private void depthFirstSearch(T s) {
         Deque<T> stack = new ArrayDeque<>();
-        stack.addLast(s);
+        stack.push(s);
         discovered.add(s);
 
         while (!stack.isEmpty()) {
@@ -93,7 +80,7 @@ public class Graph<T extends Comparable<T>> {
             Vertex<T> vertex = Vertexes.get(v);
 
             if (vertex.OutConnections.isEmpty()
-                    ||  vertex.OutConnections.keySet().stream().allMatch(discovered::contains)){
+                    ||  vertex.OutConnections.keySet().stream().allMatch(discovered::contains)) {
                 Times.put(v, ++k);
                 stack.remove(v);
             }
@@ -110,7 +97,7 @@ public class Graph<T extends Comparable<T>> {
 
     private void depthFirstSearchReversed(T s) {
         Deque<T> stack = new ArrayDeque<>();
-        stack.addLast(s);
+        stack.push(s);
         reversedDiscovered.add(s);
 
         while (!stack.isEmpty()) {
@@ -118,7 +105,7 @@ public class Graph<T extends Comparable<T>> {
             Vertex<T> vertex = Vertexes.get(v);
 
             if (vertex.InConnections.isEmpty()
-                    ||  vertex.InConnections.keySet().stream().allMatch(reversedDiscovered::contains)){
+                    ||  vertex.InConnections.keySet().stream().allMatch(reversedDiscovered::contains)) {
                 reversedTimes.put(v, ++k);
                 stack.remove(v);
             }

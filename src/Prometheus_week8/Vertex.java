@@ -15,13 +15,14 @@ public class Vertex<T> {
     }
 
     public void addConnection(Edge<T> edge) {
-        if (edge.Begin == Head
+        if (edge.Begin.equals(Head)
                 && !OutConnections.containsKey(edge.End)) {
             OutConnections.put(edge.End, edge);
         }
-        else if (edge.End == Head
+
+        if (edge.End.equals(Head)
                 && !InConnections.containsKey(edge.Begin)) {
-            InConnections.put(edge.Begin,edge);
+            InConnections.put(edge.Begin, edge);
         }
     }
 }
