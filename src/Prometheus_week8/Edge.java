@@ -1,6 +1,6 @@
 package Prometheus_week8;
 
-public class Edge<T>{
+public class Edge<T extends Comparable<T>>{
     public T Begin;
     public T End;
     public int Weight;

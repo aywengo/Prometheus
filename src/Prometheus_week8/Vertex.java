@@ -3,7 +3,7 @@ package Prometheus_week8;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Vertex<T> {
+public class Vertex<T extends Comparable<T>> {
     public T Head;
 
     Map<T,Edge<T>> InConnections = new HashMap<>();
@@ -15,14 +15,12 @@ public class Vertex<T> {
     }
 
     public void addConnection(Edge<T> edge) {
-        if (edge.Begin.equals(Head)
-                && !OutConnections.containsKey(edge.End)) {
-            OutConnections.put(edge.End, edge);
+        if (Head.equals(edge.Begin)) {
+            OutConnections.putIfAbsent(edge.End, edge);
         }
 
-        if (edge.End.equals(Head)
-                && !InConnections.containsKey(edge.Begin)) {
-            InConnections.put(edge.Begin, edge);
+        if (Head.equals(edge.End)) {
+            InConnections.putIfAbsent(edge.Begin, edge);
         }
     }
 }

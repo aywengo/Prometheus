@@ -42,26 +42,26 @@ public class Main {
             System.out.println(" -- DONE");
 
             System.out.print("Computing DFSLoop(G): ");
-            g.strongConnectedComponentComputing();
+            g.DFSLoop();
             System.out.println(" -- DONE");
 
             System.out.print("Computing DFSLoop(Gt): ");
-            g.sccAmountsComputing();
+            g.DFSLoopGt();
             System.out.println(" -- DONE");
 
-            System.out.print("Graph order complexity: ");
-            g.Times.entrySet().stream()
-                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                    .forEachOrdered(ord -> System.out.print(ord + " "));
-            System.out.println();
-
-            System.out.print("Capacities: ");
+//            System.out.print("Graph order complexity: ");
+//            g.Times.entrySet().stream()
+//                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+//                    .forEachOrdered(ord -> System.out.print(ord + " "));
+//            System.out.println();
+//
+//            System.out.print("Capacities: ");
             StringBuilder sb = new StringBuilder();
             g.componentCapacities.stream()
                     .sorted(Collections.reverseOrder())
                     .forEach(o -> sb.append(" ").append(o));
             String output = sb.toString().trim();
-            System.out.println(output);
+//            System.out.println(output);
             return output;
         } catch (OperationsException | IOException e) {
             e.printStackTrace();

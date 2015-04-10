@@ -2,6 +2,7 @@ package Prometheus_week8;
 
 import javax.management.OperationsException;
 import java.util.*;
+import java.util.stream.*;
 
 public class Graph<T extends Comparable<T>> {
     Set<Edge<T>> Edges = new HashSet<>();
@@ -11,9 +12,9 @@ public class Graph<T extends Comparable<T>> {
     List<Integer> componentCapacities = new ArrayList<>();
     Set<T> discovered = new HashSet<>();
     Set<T> reversedDiscovered = new HashSet<>();
-    int k = 0, rk =0;
+    int k = 0, rk = 0;
 
-    public void strongConnectedComponentComputing() {
+    public void DFSLoop() {
         k = 0;
         while (k < Vertexes.size()) {
             Optional<T> v = getNextUndiscovered();
@@ -22,7 +23,7 @@ public class Graph<T extends Comparable<T>> {
         }
     }
 
-    public void sccAmountsComputing()
+    public void DFSLoopGt()
             throws OperationsException {
         rk = 0;
         Times.entrySet().stream()
@@ -30,7 +31,9 @@ public class Graph<T extends Comparable<T>> {
                 .forEachOrdered(ord -> {
                     if (!reversedDiscovered.contains(ord.getKey())) {
                         depthFirstSearchReversed(ord.getKey());
-                        componentCapacities.add(reversedDiscovered.size() - componentCapacities.stream().mapToInt(Integer::intValue).sum());
+                        componentCapacities
+                                .add(reversedDiscovered.size()
+                                        - componentCapacities.stream().mapToInt(Integer::intValue).sum());
                     }
                 });
     }
@@ -79,18 +82,15 @@ public class Graph<T extends Comparable<T>> {
             T v = stack.getFirst();
             Vertex<T> vertex = Vertexes.get(v);
 
-            if (vertex.OutConnections.isEmpty()
-                    ||  vertex.OutConnections.keySet().stream().allMatch(discovered::contains)) {
-                Times.put(v, ++k);
-                stack.remove(v);
+            ArrayList<T> listOfConnectedUndiscovered = vertex.OutConnections.keySet().stream()
+                    .filter(vo -> !discovered.contains(vo))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            if (!listOfConnectedUndiscovered.isEmpty()) {
+                discovered.addAll(listOfConnectedUndiscovered);
+                listOfConnectedUndiscovered.forEach(stack::addFirst);
             }
             else {
-                vertex.OutConnections.keySet().stream()
-                        .filter(vo -> !discovered.contains(vo))
-                        .forEach(e -> {
-                            discovered.add(e);
-                            stack.addFirst(e);
-                        });
+                Times.put(stack.pop(), ++k);
             }
         }
     }
@@ -104,18 +104,15 @@ public class Graph<T extends Comparable<T>> {
             T v = stack.getFirst();
             Vertex<T> vertex = Vertexes.get(v);
 
-            if (vertex.InConnections.isEmpty()
-                    ||  vertex.InConnections.keySet().stream().allMatch(reversedDiscovered::contains)) {
-                reversedTimes.put(v, ++k);
-                stack.remove(v);
+            ArrayList<T> listOfConnectedUndiscovered = vertex.InConnections.keySet().stream()
+                    .filter(vo -> !reversedDiscovered.contains(vo))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            if (!listOfConnectedUndiscovered.isEmpty()) {
+                reversedDiscovered.addAll(listOfConnectedUndiscovered);
+                listOfConnectedUndiscovered.forEach(stack::addFirst);
             }
             else {
-                vertex.InConnections.keySet().stream()
-                        .filter(vo -> !reversedDiscovered.contains(vo))
-                        .forEach(e -> {
-                            reversedDiscovered.add(e);
-                            stack.addFirst(e);
-                        });
+                reversedTimes.put(stack.pop(), ++rk);
             }
         }
     }
