@@ -16,6 +16,9 @@ public class Vertex<T extends Comparable<T>> {
 
     // TODO : refactor is required before final commit
     public void addConnection(Edge<T> edge) {
+        if (edge.Begin.equals(edge.End))
+            return;
+
         if (Head.equals(edge.Begin)) {
             if (OutConnections.containsKey(edge.End)) {
                 if (OutConnections.get(edge.End).Weight > edge.Weight) {

@@ -6,6 +6,7 @@ import java.util.*;
 public class Graph<T extends Comparable<T>> {
     Set<Edge<T>> Edges = new HashSet<>();
     Map<T, Vertex<T>> Vertexes = new HashMap<>();
+    Map<T, Map<T, Integer>> Distances = new HashMap<>();
 
     public static int INFINITY = Integer.MAX_VALUE;
 
@@ -36,11 +37,7 @@ public class Graph<T extends Comparable<T>> {
         }
     }
 
-    public int compileShortestPath(T start, T destination){
-        if (start.equals(destination)) {
-            return 0;
-        }
-
+    public Map<T, Integer> compileShortestPath(T start){
         Map<Vertex<T>,Integer> Q = new HashMap<>();
         Map<T,Integer> A = new HashMap<>();
         Map<T,T> B = new HashMap<>();
@@ -61,7 +58,8 @@ public class Graph<T extends Comparable<T>> {
 
             for (Edge<T> u : v.OutConnections.values()) {
                 int weight = A.get(v.Head) + u.Weight;
-                if (A.get(u.End) > weight) {
+
+                if (A.get(u.End) > weight && weight >= 0) {
                     A.put(u.End, weight);
                     B.put(u.End, v.Head);
                     Q.put(Vertexes.get(u.End), weight);
@@ -69,23 +67,10 @@ public class Graph<T extends Comparable<T>> {
             }
         }
 
-        return A.get(destination);
+        return A;
     }
 
-    public int[][] getRelationMatrix() {
-        int size = Vertexes.size();
-        int[][] result = new int[size][size];
-
-        int vc = 0;
-        for (T v : Vertexes.keySet()) {
-            int uc = 0;
-            for (T u : Vertexes.keySet()) {
-                result[vc][uc] = compileShortestPath(v , u);
-                uc++;
-            }
-            vc++;
-        }
-
-        return result;
+    public void compilePaths() {
+        Vertexes.keySet().forEach(v -> Distances.put(v, compileShortestPath(v)));
     }
 }

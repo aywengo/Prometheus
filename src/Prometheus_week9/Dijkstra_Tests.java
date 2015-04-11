@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Collections;
 
 public class Dijkstra_Tests {
     @Test
@@ -46,12 +47,11 @@ public class Dijkstra_Tests {
         assertInOuts("input_8_10.txt", "output_8.txt");
     }
 
-
     private void assertInOuts(String inputFile, String outputFile) {
         try {
             Graph<Integer> graph = Helper.getGraphFromFile(inputFile);
-            int[][] expected = Helper.parseRelationMatrix(outputFile, graph.Vertexes.size());
-            int[][] relationMatrix = graph.getRelationMatrix();
+            int[][] expected = Helper.parseRelationMatrix(outputFile, Collections.max(graph.Vertexes.keySet()));
+            int[][] relationMatrix = Helper.getRelationMatrix(graph);
             Assert.assertArrayEquals(expected, relationMatrix);
         } catch (IOException e) {
             e.printStackTrace();
