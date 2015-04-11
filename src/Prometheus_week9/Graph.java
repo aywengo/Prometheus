@@ -37,10 +37,52 @@ public class Graph<T extends Comparable<T>> {
         }
     }
 
-    public Map<T, Integer> compileShortestPath(T start){
+    public Map<Object[], Integer> compileAllPossiblePaths(T start, T destination) {
         Map<Vertex<T>,Integer> Q = new HashMap<>();
         Map<T,Integer> A = new HashMap<>();
         Map<T,T> B = new HashMap<>();
+        Map<Object[], Integer> result = new HashMap<>();
+
+        for (Vertex<T> v : Vertexes.values()) {
+            if (v.Head.equals(start)) {
+                A.putIfAbsent(v.Head,0);
+            } else {
+                A.putIfAbsent(v.Head, INFINITY);
+            }
+            Q.put(v,A.get(v.Head));
+        }
+
+        while (!Q.isEmpty()) {
+            Vertex<T> v = Q.entrySet().stream()
+                    .min(Map.Entry.comparingByValue(Integer::compareTo))
+                    .get().getKey();
+            Q.remove(v);
+
+            for (Edge<T> u : v.OutConnections.values()) {
+                int weight = A.get(v.Head) + u.Weight;
+
+                if (A.get(u.End) > weight && weight >= 0) {
+                    B.put(u.End, v.Head);
+                    A.put(u.End, weight);
+                    Q.put(Vertexes.get(u.End), weight);
+
+                    if (u.End.equals(destination)) {
+                        Deque<T> path = new ArrayDeque<>();
+                        path.addFirst(u.End);
+                        while(!path.peek().equals(start)){
+                            path.addFirst(B.get(path.peek()));
+                        }
+                        result.put(path.toArray(),weight);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public Map<T, Integer> compileShortestPaths(T start){
+        Map<Vertex<T>,Integer> Q = new HashMap<>();
+        Map<T,Integer> A = new HashMap<>();
         for (Vertex<T> v : Vertexes.values()) {
             if (v.Head.equals(start)) {
                 A.putIfAbsent(v.Head,0);
@@ -61,7 +103,6 @@ public class Graph<T extends Comparable<T>> {
 
                 if (A.get(u.End) > weight && weight >= 0) {
                     A.put(u.End, weight);
-                    B.put(u.End, v.Head);
                     Q.put(Vertexes.get(u.End), weight);
                 }
             }
@@ -71,6 +112,6 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public void compilePaths() {
-        Vertexes.keySet().forEach(v -> Distances.put(v, compileShortestPath(v)));
+        Vertexes.keySet().forEach(v -> Distances.put(v, compileShortestPaths(v)));
     }
 }
