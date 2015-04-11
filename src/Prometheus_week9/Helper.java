@@ -29,10 +29,10 @@ public class Helper {
             }
 
             if (result.Vertexes.size() != expectedVAmount) {
-                throw new UnsupportedOperationException();
+                System.out.printf("Expected amount %d but was parsed %d%n", expectedVAmount, result.Vertexes.size());
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (inputStream != null) {
@@ -81,8 +81,8 @@ public class Helper {
     private static Integer tryParse(String text) {
         try {
             return new Integer(text);
-        } catch (NumberFormatException e) {
-            return Integer.MAX_VALUE;
+        } catch (Exception e) {
+            return Graph.INFINITY;
         }
     }
 }

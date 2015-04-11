@@ -7,6 +7,26 @@ import java.io.IOException;
 
 public class Dijkstra_Tests {
     @Test
+    public void test1() {
+        assertInOuts("input_1_100.txt", "output_1.txt");
+    }
+
+    @Test
+    public void test2() {
+        assertInOuts("input_2_100.txt", "output_2.txt");
+    }
+
+    @Test
+    public void test3() {
+        assertInOuts("input_3_100.txt", "output_3.txt");
+    }
+
+    @Test
+    public void test4() {
+        assertInOuts("input_4_1000.txt", "output_4.txt");
+    }
+
+    @Test
     public void test5() {
         assertInOuts("input_5_10.txt", "output_5.txt");
     }
@@ -31,7 +51,8 @@ public class Dijkstra_Tests {
         try {
             Graph<Integer> graph = Helper.getGraphFromFile(inputFile);
             int[][] expected = Helper.parseRelationMatrix(outputFile, graph.Vertexes.size());
-            Assert.assertArrayEquals(expected, graph.getRalationMatrix());
+            int[][] relationMatrix = graph.getRelationMatrix();
+            Assert.assertArrayEquals(expected, relationMatrix);
         } catch (IOException e) {
             e.printStackTrace();
         }
