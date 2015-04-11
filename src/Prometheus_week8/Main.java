@@ -12,7 +12,7 @@ public class Main {
         File inputFile = new File(String.format("%s\\src\\Prometheus_week8\\data\\%s",
                 System.getProperty("user.dir"), "input_08.txt"));
 
-        computePattern(inputFile);
+        System.out.println(computePattern(inputFile));
     }
 
     public static String computePattern(File inputFile){
@@ -60,9 +60,7 @@ public class Main {
             g.componentCapacities.stream()
                     .sorted(Collections.reverseOrder())
                     .forEach(o -> sb.append(" ").append(o));
-            String output = sb.toString().trim();
-//            System.out.println(output);
-            return output;
+            return sb.toString().trim();
         } catch (OperationsException | IOException e) {
             e.printStackTrace();
         }
