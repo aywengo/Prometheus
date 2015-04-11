@@ -4,11 +4,10 @@ import javax.naming.OperationNotSupportedException;
 import java.util.*;
 
 public class Graph<T extends Comparable<T>> {
+    public static int INFINITY = Integer.MAX_VALUE;
     Set<Edge<T>> Edges = new HashSet<>();
     Map<T, Vertex<T>> Vertexes = new HashMap<>();
     Map<T, Map<T, Integer>> Distances = new HashMap<>();
-
-    public static int INFINITY = Integer.MAX_VALUE;
 
     public void addEdge(T begin, T end, int weight) throws OperationNotSupportedException {
         if (weight < 0) {
@@ -38,18 +37,18 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public Map<Object[], Integer> compileAllPossiblePaths(T start, T destination) {
-        Map<Vertex<T>,Integer> Q = new HashMap<>();
-        Map<T,Integer> A = new HashMap<>();
-        Map<T,T> B = new HashMap<>();
+        Map<Vertex<T>, Integer> Q = new HashMap<>();
+        Map<T, Integer> A = new HashMap<>();
+        Map<T, T> B = new HashMap<>();
         Map<Object[], Integer> result = new HashMap<>();
 
         for (Vertex<T> v : Vertexes.values()) {
             if (v.Head.equals(start)) {
-                A.putIfAbsent(v.Head,0);
+                A.putIfAbsent(v.Head, 0);
             } else {
                 A.putIfAbsent(v.Head, INFINITY);
             }
-            Q.put(v,A.get(v.Head));
+            Q.put(v, A.get(v.Head));
         }
 
         while (!Q.isEmpty()) {
@@ -69,10 +68,10 @@ public class Graph<T extends Comparable<T>> {
                     if (u.End.equals(destination)) {
                         Deque<T> path = new ArrayDeque<>();
                         path.addFirst(u.End);
-                        while(!path.peek().equals(start)){
+                        while (!path.peek().equals(start)) {
                             path.addFirst(B.get(path.peek()));
                         }
-                        result.put(path.toArray(),weight);
+                        result.put(path.toArray(), weight);
                     }
                 }
             }
@@ -80,16 +79,16 @@ public class Graph<T extends Comparable<T>> {
         return result;
     }
 
-    public Map<T, Integer> compileShortestPaths(T start){
-        Map<Vertex<T>,Integer> Q = new HashMap<>();
-        Map<T,Integer> A = new HashMap<>();
+    public Map<T, Integer> compileShortestPaths(T start) {
+        Map<Vertex<T>, Integer> Q = new HashMap<>();
+        Map<T, Integer> A = new HashMap<>();
         for (Vertex<T> v : Vertexes.values()) {
             if (v.Head.equals(start)) {
-                A.putIfAbsent(v.Head,0);
+                A.putIfAbsent(v.Head, 0);
             } else {
                 A.putIfAbsent(v.Head, INFINITY);
             }
-            Q.put(v,A.get(v.Head));
+            Q.put(v, A.get(v.Head));
         }
 
         while (!Q.isEmpty()) {
