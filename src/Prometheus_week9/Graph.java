@@ -37,7 +37,7 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public Map<Object[], Integer> compileAllPossiblePaths(T start, T destination) {
-        Map<Vertex<T>, Integer> Q = new HashMap<>();
+        TreeMap<Vertex<T>, Integer> Q = new TreeMap<>();
         Map<T, Integer> A = new HashMap<>();
         Map<T, T> B = new HashMap<>();
         Map<Object[], Integer> result = new HashMap<>();
@@ -52,12 +52,9 @@ public class Graph<T extends Comparable<T>> {
         }
 
         while (!Q.isEmpty()) {
-            Vertex<T> v = Q.entrySet().stream()
-                    .min(Map.Entry.comparingByValue(Integer::compareTo))
-                    .get().getKey();
-            Q.remove(v);
+            Vertex<T> v =  Q.pollLastEntry().getKey();
 
-            for (Edge<T> u : v.OutConnections.values()) {
+            v.OutConnections.values().stream().forEach(u -> {
                 int weight = A.get(v.Head) + u.Weight;
 
                 if (A.get(u.End) > weight && weight >= 0) {
@@ -72,9 +69,10 @@ public class Graph<T extends Comparable<T>> {
                             path.addFirst(B.get(path.peek()));
                         }
                         result.put(path.toArray(), weight);
+                        System.out.printf("Got to endpoint with weight %d%n", weight);
                     }
                 }
-            }
+            });
         }
         return result;
     }
@@ -94,6 +92,7 @@ public class Graph<T extends Comparable<T>> {
         while (!Q.isEmpty()) {
             Vertex<T> v =
                     Q.pollLastEntry().getKey();
+
             v.OutConnections.values().stream().forEach(u -> {
                 int weight = A.get(v.Head) + u.Weight;
 
