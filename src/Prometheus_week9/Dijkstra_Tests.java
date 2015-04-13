@@ -51,8 +51,12 @@ public class Dijkstra_Tests {
         try {
             Graph<Integer> graph = Helper.getGraphFromFile(inputFile);
             int[][] expected = Helper.parseRelationMatrix(outputFile, Collections.max(graph.Vertexes.keySet()));
+            long startTime = System.currentTimeMillis();
             int[][] relationMatrix = Helper.getRelationMatrix(graph);
+            long estimatedTime = System.currentTimeMillis() - startTime;
+            System.out.printf("Elapsed time of calculation for %s is %s ms %n", inputFile, estimatedTime);
             Assert.assertArrayEquals(expected, relationMatrix);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
