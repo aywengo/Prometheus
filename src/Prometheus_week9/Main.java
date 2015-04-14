@@ -21,13 +21,11 @@ public class Main {
             System.out.printf(" -- DONE [%s]%n", new Date());
             System.out.printf("[%s] - Calculation distances from %d to %d%n",
                     new Date(),start, destination);
-            Map<Object[], Integer> result = graph.compileAllPossiblePaths(start, destination);
-            int shortest = Collections.min(result.values());
-            long amountOfShortest = result.values().stream().filter(a -> a == shortest).count();
+            Map<Integer, Integer> result = graph.compileShortestPaths(start);
+
             System.out.printf("[%s] - The shortest distance from %d to %d is %d%n",
-                    new Date(), start, destination, shortest);
-            System.out.printf("[%s] - Amount found of shortest paths from %d to %d is %d%n",
-                    new Date(), start, destination, amountOfShortest);
+                    new Date(), start, destination, result.get(destination));
+
         } catch (IOException e) {
             e.printStackTrace();
         }

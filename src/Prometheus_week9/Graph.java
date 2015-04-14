@@ -36,46 +36,6 @@ public class Graph<T extends Comparable<T>> {
         }
     }
 
-    public Map<Object[], Integer> compileAllPossiblePaths(T start, T destination) {
-        ArrayDeque<Vertex<T>> Q = new ArrayDeque<>();
-        Map<T, Integer> A = new HashMap<>();
-        Map<T, T> B = new HashMap<>();
-        Map<Object[], Integer> result = new HashMap<>();
-
-        Vertexes.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .forEachOrdered(vert -> Q.push(vert.getValue()));
-        A.put(start, 0);
-
-
-        while (!Q.isEmpty()) {
-            Vertex<T> v =  Q.pollLast();
-
-            v.OutConnections.values().stream().forEach(u -> {
-                if (A.containsKey(v.Head)) {
-                    int weight = A.get(v.Head) + u.Weight;
-
-                    if (!A.containsKey(u.End) || A.get(u.End) > weight) {
-                        B.put(u.End, v.Head);
-                        A.put(u.End, weight);
-                        Q.push(Vertexes.get(u.End));
-
-                        if (u.End.equals(destination)) {
-                            Deque<T> path = new ArrayDeque<>();
-                            path.addFirst(u.End);
-                            while (!path.peek().equals(start)) {
-                                path.addFirst(B.get(path.peek()));
-                            }
-                            result.put(path.toArray(), weight);
-                            System.out.printf("Got to endpoint with weight %d%n", weight);
-                        }
-                    }
-                }
-            });
-        }
-        return result;
-    }
-
     public Map<T, Integer> compileShortestPaths(T start) {
         ArrayDeque<Vertex<T>> Q = new ArrayDeque<>();
         Map<T, Integer> A = new HashMap<>();
