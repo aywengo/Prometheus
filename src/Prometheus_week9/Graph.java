@@ -37,39 +37,38 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public Map<Object[], Integer> compileAllPossiblePaths(T start, T destination) {
-        TreeMap<Vertex<T>, Integer> Q = new TreeMap<>();
+        ArrayDeque<Vertex<T>> Q = new ArrayDeque<>();
         Map<T, Integer> A = new HashMap<>();
         Map<T, T> B = new HashMap<>();
         Map<Object[], Integer> result = new HashMap<>();
 
-        for (Vertex<T> v : Vertexes.values()) {
-            if (v.Head.equals(start)) {
-                A.putIfAbsent(v.Head, 0);
-            } else {
-                A.putIfAbsent(v.Head, INFINITY);
-            }
-            Q.put(v, A.get(v.Head));
-        }
+        Vertexes.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(vert -> Q.push(vert.getValue()));
+        A.put(start, 0);
+
 
         while (!Q.isEmpty()) {
-            Vertex<T> v =  Q.pollLastEntry().getKey();
+            Vertex<T> v =  Q.pollLast();
 
             v.OutConnections.values().stream().forEach(u -> {
-                int weight = A.get(v.Head) + u.Weight;
+                if (A.containsKey(v.Head)) {
+                    int weight = A.get(v.Head) + u.Weight;
 
-                if (A.get(u.End) > weight && weight >= 0) {
-                    B.put(u.End, v.Head);
-                    A.put(u.End, weight);
-                    Q.put(Vertexes.get(u.End), weight);
+                    if (!A.containsKey(u.End) || A.get(u.End) > weight) {
+                        B.put(u.End, v.Head);
+                        A.put(u.End, weight);
+                        Q.push(Vertexes.get(u.End));
 
-                    if (u.End.equals(destination)) {
-                        Deque<T> path = new ArrayDeque<>();
-                        path.addFirst(u.End);
-                        while (!path.peek().equals(start)) {
-                            path.addFirst(B.get(path.peek()));
+                        if (u.End.equals(destination)) {
+                            Deque<T> path = new ArrayDeque<>();
+                            path.addFirst(u.End);
+                            while (!path.peek().equals(start)) {
+                                path.addFirst(B.get(path.peek()));
+                            }
+                            result.put(path.toArray(), weight);
+                            System.out.printf("Got to endpoint with weight %d%n", weight);
                         }
-                        result.put(path.toArray(), weight);
-                        System.out.printf("Got to endpoint with weight %d%n", weight);
                     }
                 }
             });
@@ -78,27 +77,24 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public Map<T, Integer> compileShortestPaths(T start) {
-        TreeMap<Vertex<T>, Integer> Q = new TreeMap<>();
+        ArrayDeque<Vertex<T>> Q = new ArrayDeque<>();
         Map<T, Integer> A = new HashMap<>();
-        for (Vertex<T> v : Vertexes.values()) {
-            if (v.Head.equals(start)) {
-                A.putIfAbsent(v.Head, 0);
-            } else {
-                A.putIfAbsent(v.Head, INFINITY);
-            }
-            Q.put(v, A.get(v.Head));
-        }
+        Vertexes.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(vert -> Q.push(vert.getValue()));
+        A.put(start, 0);
 
         while (!Q.isEmpty()) {
-            Vertex<T> v =
-                    Q.pollLastEntry().getKey();
+            Vertex<T> v = Q.pollLast();
 
             v.OutConnections.values().stream().forEach(u -> {
-                int weight = A.get(v.Head) + u.Weight;
+                if (A.containsKey(v.Head)) {
+                    int weight = A.get(v.Head) + u.Weight;
 
-                if (A.get(u.End) > weight && weight >= 0) {
-                    A.put(u.End, weight);
-                    Q.put(Vertexes.get(u.End), weight);
+                    if (!A.containsKey(u.End) || A.get(u.End) > weight) {
+                        A.put(u.End, weight);
+                        Q.push(Vertexes.get(u.End));
+                    }
                 }
             });
         }
