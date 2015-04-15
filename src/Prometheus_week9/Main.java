@@ -21,7 +21,7 @@ public class Main {
             System.out.printf(" -- DONE [%s]%n", new Date());
             System.out.printf("[%s] - Calculation distances from %d to %d%n",
                     new Date(),start, destination);
-            Map<Integer, Integer> result = graph.compileShortestPaths(start);
+            Map<Integer, Integer> result = graph.compileShortestPaths(start, destination);
 
             System.out.printf("[%s] - The shortest distance from %d to %d is %d%n",
                     new Date(), start, destination, result.get(destination));

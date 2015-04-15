@@ -36,9 +36,12 @@ public class Graph<T extends Comparable<T>> {
         }
     }
 
-    public Map<T, Integer> compileShortestPaths(T start) {
+    public Map<T, Integer> compileShortestPaths(T start, T destination) {
         ArrayDeque<Vertex<T>> Q = new ArrayDeque<>();
         Map<T, Integer> A = new HashMap<>();
+        Map<T, T> B = new HashMap<>();
+        Map<Object[], Integer> paths = new HashMap<>();
+
         Vertexes.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .forEachOrdered(vert -> Q.push(vert.getValue()));
@@ -53,7 +56,18 @@ public class Graph<T extends Comparable<T>> {
 
                     if (!A.containsKey(u.End) || A.get(u.End) > weight) {
                         A.put(u.End, weight);
+                        B.put(u.End, v.Head);
                         Q.push(Vertexes.get(u.End));
+
+                        if (destination != null
+                                && u.End.equals(destination)) {
+                            Deque<T> path = new ArrayDeque<>();
+                            path.addFirst(u.End);
+                            while (!path.peek().equals(start)) {
+                                path.addFirst(B.get(path.peek()));
+                            }
+                            paths.put(path.toArray(), weight);
+                        }
                     }
                 }
             });
@@ -62,6 +76,6 @@ public class Graph<T extends Comparable<T>> {
     }
 
     public void compilePaths() {
-        Vertexes.keySet().forEach(v -> Distances.put(v, compileShortestPaths(v)));
+        Vertexes.keySet().forEach(v -> Distances.put(v, compileShortestPaths(v, null)));
     }
 }
